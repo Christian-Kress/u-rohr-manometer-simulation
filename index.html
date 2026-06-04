@@ -1,935 +1,700 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lernsimulation: U-Rohr-Manometer</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Simulation: Druckdifferenzmessung mit dem U-Rohr-Manometer</title>
   <style>
     :root {
-      --bg: #eef3f6;
-      --card: #ffffff;
-      --navy: #163348;
-      --blue: #126a87;
-      --blue-light: #e5f2f6;
-      --accent: #dd632e;
-      --accent-light: #fff1e9;
-      --line: #d4e0e6;
-      --muted: #587180;
-      --success: #087260;
-      --shadow: 0 10px 28px rgba(20, 45, 61, 0.08);
-      --radius: 18px;
-      --fluid: #228dcc;
-      --fluid-soft: rgba(34, 141, 204, 0.22);
+      --bg: #f5f8fb;
+      --panel: #ffffff;
+      --ink: #17202a;
+      --muted: #5f6f80;
+      --line: #d7e0ea;
+      --accent: #1469a8;
+      --accent-dark: #0c4874;
+      --pipe: #9fd0ee;
+      --pipe-dark: #2f6688;
+      --lock: #eda17a;
+      --glass: rgba(231, 241, 249, 0.58);
+      --warning: #9d4b00;
+      --error: #a32020;
+      --ok: #1e6b52;
+      --radius: 8px;
+      --shadow: 0 10px 28px rgba(30, 54, 76, 0.09);
     }
 
     * {
       box-sizing: border-box;
     }
 
-    html {
-      scroll-behavior: smooth;
-    }
-
     body {
       margin: 0;
-      min-width: 300px;
-      color: var(--navy);
+      min-height: 100vh;
       background: var(--bg);
-      font: 17px/1.5 "Segoe UI", Roboto, Arial, sans-serif;
+      color: var(--ink);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.45;
     }
 
     .page {
-      width: min(1440px, calc(100% - 40px));
+      width: min(1220px, calc(100% - 32px));
       margin: 0 auto;
-      padding: 28px 0 36px;
+      padding: 28px 0 40px;
     }
 
-    .hero {
-      display: grid;
-      grid-template-columns: 1.12fr 0.88fr;
-      align-items: stretch;
-      gap: 22px;
+    header {
       margin-bottom: 22px;
-    }
-
-    .title-panel {
-      padding: clamp(24px, 4vw, 36px);
-      border-radius: var(--radius);
-      color: #fff;
-      background: linear-gradient(125deg, #113044, #14627d);
-      box-shadow: var(--shadow);
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      margin: 0 0 12px;
-      color: #b7e5ef;
-      font-size: 0.88rem;
-      font-weight: 700;
-      letter-spacing: 0.09em;
-      text-transform: uppercase;
-    }
-
-    .eyebrow::before {
-      content: "";
-      width: 28px;
-      height: 2px;
-      background: #4ec5db;
     }
 
     h1 {
-      margin: 0 0 11px;
-      font-size: clamp(2rem, 3.2vw, 2.8rem);
+      margin: 0 0 8px;
+      color: var(--accent-dark);
+      font-size: clamp(1.75rem, 2.8vw, 2.55rem);
       line-height: 1.12;
-      letter-spacing: -0.03em;
+      letter-spacing: 0;
     }
 
-    .lead {
-      max-width: 58ch;
-      margin: 0;
-      color: #e6f0f3;
-      font-size: clamp(1rem, 1.35vw, 1.12rem);
-    }
-
-    .scenario {
-      padding: 21px 26px;
-      border: 1px solid var(--line);
-      border-left: 5px solid var(--accent);
-      border-radius: var(--radius);
-      background: var(--card);
-      box-shadow: var(--shadow);
-    }
-
-    .scenario h2,
-    .section-head h2 {
-      margin: 0 0 10px;
-      font-size: clamp(1.2rem, 1.9vw, 1.42rem);
-    }
-
-    .scenario p {
-      margin: 0;
-      color: #314d5d;
-      line-height: 1.55;
-    }
-
-    .simulation-grid {
-      display: grid;
-      grid-template-columns: minmax(560px, 1.78fr) minmax(310px, 0.86fr);
-      gap: 22px;
-      margin-bottom: 22px;
-    }
-
-    .card {
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: var(--card);
-      box-shadow: var(--shadow);
-    }
-
-    .visual-card {
-      padding: 20px clamp(12px, 2vw, 22px) 18px;
-    }
-
-    .section-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 18px;
-      margin: 0 6px 10px;
-    }
-
-    .section-head p {
+    .intro {
+      max-width: 880px;
       margin: 0;
       color: var(--muted);
-      font-size: 0.96rem;
-      font-weight: 600;
-      text-align: right;
+      font-size: 1.08rem;
     }
 
-    .drawing {
-      display: block;
-      width: 100%;
-      height: auto;
-      min-height: min(56vh, 490px);
-      border-radius: 13px;
-      background: #f8fbfc;
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
     }
 
-    svg text {
-      font-family: "Segoe UI", Roboto, Arial, sans-serif;
-      fill: var(--navy);
-    }
-
-    .diagram-label {
-      font-size: 18px;
-      font-weight: 600;
-    }
-
-    .diagram-small {
-      fill: var(--muted);
-      font-size: 15px;
-      font-weight: 500;
-    }
-
-    .diagram-highlight {
-      fill: var(--accent);
-      font-size: 19px;
-      font-weight: 700;
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
     }
 
     .controls {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      padding: 23px;
+      padding: 18px;
     }
 
-    .control-title {
-      margin: 0;
-      font-size: 1.3rem;
+    .section-title {
+      margin: 0 0 14px;
+      color: var(--accent-dark);
+      font-size: 1.08rem;
+      line-height: 1.25;
+      letter-spacing: 0;
     }
 
-    .controls-head {
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-      gap: 12px;
+    .control {
+      padding: 14px 0;
+      border-top: 1px solid var(--line);
     }
 
-    .reset {
-      width: 100%;
-      padding: 9px 12px;
-      border: 1px solid #b7cdd6;
-      border-radius: 10px;
-      color: var(--blue);
-      background: #fff;
-      font: inherit;
-      font-size: 0.92rem;
-      font-weight: 700;
-      cursor: pointer;
+    .control:first-of-type {
+      border-top: 0;
+      padding-top: 0;
     }
 
-    .reset:hover {
-      background: #eef7f9;
-    }
-
-    .control-group {
-      padding: 17px;
-      border: 1px solid #dce7eb;
-      border-radius: 14px;
-      background: #f7fafb;
-    }
-
-    .control-group label {
-      display: block;
-      margin-bottom: 10px;
-      font-weight: 700;
-    }
-
-    .slider-header {
+    .control label,
+    .select-label {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 11px;
+      gap: 12px;
+      margin-bottom: 8px;
+      color: var(--ink);
+      font-weight: 700;
     }
 
-    .slider-header output {
-      padding: 5px 10px;
-      border-radius: 9px;
-      color: var(--blue);
-      background: #dff0f5;
-      font-size: 1.08rem;
-      font-weight: 750;
-      white-space: nowrap;
+    .value-badge {
+      min-width: 86px;
+      color: var(--accent-dark);
+      text-align: right;
+      font-variant-numeric: tabular-nums;
     }
 
     input[type="range"] {
       width: 100%;
-      height: 28px;
-      accent-color: var(--blue);
-      cursor: pointer;
-    }
-
-    .range-limits {
-      display: flex;
-      justify-content: space-between;
-      color: var(--muted);
-      font-size: 0.86rem;
+      accent-color: var(--accent);
     }
 
     select {
       width: 100%;
-      padding: 12px 13px;
-      border: 1px solid #b9cbd3;
-      border-radius: 10px;
-      color: var(--navy);
+      min-height: 42px;
+      padding: 8px 10px;
+      border: 1px solid #b8c6d4;
+      border-radius: 6px;
       background: #fff;
+      color: var(--ink);
       font: inherit;
-      font-weight: 600;
+    }
+
+    .button-row {
+      margin-top: 16px;
+    }
+
+    button {
+      width: 100%;
+      min-height: 44px;
+      border: 0;
+      border-radius: 6px;
+      background: var(--accent);
+      color: #fff;
+      font: inherit;
+      font-weight: 700;
       cursor: pointer;
     }
 
-    select:focus-visible,
-    input:focus-visible,
-    button:focus-visible,
-    summary:focus-visible {
-      outline: 3px solid rgba(18, 106, 135, 0.27);
-      outline-offset: 2px;
+    button:hover,
+    button:focus-visible {
+      background: var(--accent-dark);
     }
 
-    .unit-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 7px;
-      margin-top: 13px;
-    }
-
-    .unit-chips span {
-      padding: 6px 9px;
-      border-radius: 20px;
-      background: #e8f1f4;
-      color: #294756;
-      font-size: 0.9rem;
-      font-weight: 600;
-    }
-
-    .measurement {
-      padding: 18px 17px;
-      border-radius: 14px;
-      color: #fff;
-      background: var(--blue);
-    }
-
-    .measurement span {
-      display: block;
-      margin-bottom: 4px;
-      color: #d0ecf2;
-      font-size: 0.93rem;
-      font-weight: 600;
-    }
-
-    .measurement strong {
-      display: block;
-      font-size: clamp(1.55rem, 3vw, 2.05rem);
-      line-height: 1.22;
-    }
-
-    .measurement small {
-      color: #d0ecf2;
-      font-size: 0.9rem;
-    }
-
-    .statement {
-      margin: 0;
-      padding: 13px 14px;
-      border: 1px solid #cddfe5;
-      border-radius: 11px;
-      color: #294554;
-      background: #f0f7f9;
-      font-size: 0.96rem;
-    }
-
-    .statement strong {
-      color: var(--blue);
-    }
-
-    .safety {
-      display: none;
-      padding: 13px 14px;
-      border: 1px solid #f0c788;
-      border-radius: 11px;
-      color: #6d4708;
-      background: #fff6e6;
-      font-size: 0.93rem;
-    }
-
-    .safety.visible {
-      display: block;
-    }
-
-    .content-grid {
+    .main {
       display: grid;
-      grid-template-columns: 1fr 1.08fr;
-      gap: 22px;
-      margin-bottom: 22px;
+      gap: 18px;
     }
 
-    .values-card,
-    .formula-card,
-    .tasks,
-    .memo {
-      padding: clamp(20px, 2.5vw, 27px);
+    .drawing-panel {
+      padding: 16px;
     }
 
-    .values-card h2,
-    .formula-card h2,
-    .tasks h2 {
-      margin: 0 0 18px;
-      font-size: 1.4rem;
+    .drawing-wrap {
+      width: 100%;
+      overflow: auto;
     }
 
-    .values {
+    svg {
+      display: block;
+      width: 100%;
+      min-width: 640px;
+      height: auto;
+    }
+
+    .svg-label {
+      fill: #1f2933;
+      font-size: 25px;
+      font-weight: 700;
+    }
+
+    .svg-small {
+      fill: #33475b;
+      font-size: 19px;
+      font-weight: 700;
+    }
+
+    .svg-note {
+      fill: #45586c;
+      font-size: 16px;
+    }
+
+    .results {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 11px;
-      margin: 0;
+      grid-template-columns: minmax(240px, 1fr) minmax(280px, 1.25fr);
+      gap: 18px;
     }
 
-    .value {
-      min-height: 86px;
-      padding: 13px 14px;
-      border-radius: 12px;
-      background: #f5f9fa;
+    .values,
+    .formula,
+    .observation,
+    .task {
+      padding: 18px;
     }
 
-    .value.emphasis {
-      border: 1px solid #c7e3ea;
-      background: #eaf6f8;
+    .value-grid {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 9px 16px;
+      font-size: 1rem;
     }
 
-    .value.height {
-      grid-column: 1 / -1;
-    }
-
-    .value dt {
-      margin: 0 0 5px;
+    .value-grid dt {
       color: var(--muted);
-      font-size: 0.88rem;
-      font-weight: 650;
     }
 
-    .value dd {
+    .value-grid dd {
       margin: 0;
-      color: var(--navy);
-      font-size: clamp(1rem, 1.5vw, 1.14rem);
-      font-weight: 720;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      text-align: right;
     }
 
     .formula-box {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 12px 26px;
-      padding: 16px 18px;
-      margin-bottom: 15px;
-      border-radius: 12px;
-      color: var(--navy);
-      background: #eff6f8;
-      font-size: clamp(1.25rem, 2vw, 1.55rem);
+      display: grid;
+      gap: 8px;
+      color: #27394b;
+      font-size: 1.02rem;
+    }
+
+    .formula-line {
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #f9fbfd;
+      overflow-x: auto;
+      font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+      white-space: nowrap;
+    }
+
+    .result-line {
+      color: var(--accent-dark);
+      font-size: 1.2rem;
+      font-weight: 800;
+    }
+
+    .message {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      background: #f9fbfd;
+      color: var(--muted);
+    }
+
+    .message.warning {
+      border-color: #e7b06b;
+      background: #fff6e8;
+      color: var(--warning);
+    }
+
+    .message.error {
+      border-color: #e5a3a3;
+      background: #fff1f1;
+      color: var(--error);
+    }
+
+    .observation p,
+    .task p {
+      margin: 0;
+      font-size: 1.06rem;
+    }
+
+    .observation p {
+      color: var(--ok);
       font-weight: 700;
     }
 
-    .formula-box .secondary {
-      color: var(--blue);
+    .task {
+      margin-top: 18px;
+      border-left: 5px solid var(--accent);
     }
 
-    .explanation {
-      margin: 0 0 18px;
-      color: #395563;
-    }
-
-    .example {
-      padding: 15px 17px;
-      border-left: 4px solid var(--accent);
-      border-radius: 0 11px 11px 0;
-      color: #203c4b;
-      background: var(--accent-light);
-    }
-
-    .example span {
-      display: block;
-      margin-bottom: 6px;
-      color: #774127;
-      font-size: 0.92rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
-    #calculation {
-      margin: 0;
-      font-size: clamp(1rem, 1.4vw, 1.1rem);
-      font-weight: 650;
-    }
-
-    #calculation span {
-      display: block;
-    }
-
-    .formula-note {
-      margin: 14px 0 0;
-      padding: 11px 13px;
-      border-radius: 10px;
-      color: #284754;
-      background: #f5f9fa;
-      font-weight: 650;
-    }
-
-    .tasks {
-      margin-bottom: 22px;
-    }
-
-    .tasks ol {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 13px 34px;
-      margin: 0;
-      padding: 0 0 0 26px;
-    }
-
-    .tasks li {
-      padding: 0 8px 0 4px;
-      color: #294554;
-      line-height: 1.6;
-    }
-
-    .tasks li::marker {
-      color: var(--blue);
-      font-weight: 750;
-    }
-
-    details {
-      border-radius: var(--radius);
-      overflow: hidden;
-    }
-
-    summary {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 3px 0;
-      cursor: pointer;
-      list-style: none;
-      font-size: 1.4rem;
-      font-weight: 750;
-    }
-
-    summary::-webkit-details-marker {
-      display: none;
-    }
-
-    summary::after {
-      content: "+";
-      display: grid;
-      place-items: center;
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      color: var(--blue);
-      background: #e8f3f6;
-      font-size: 1.45rem;
-    }
-
-    details[open] summary::after {
-      content: "−";
-    }
-
-    .memo p {
-      margin: 16px 0 0;
-      padding: 16px 18px;
-      border-radius: 12px;
-      color: #244351;
-      background: #eff7f9;
-      font-size: 1.05rem;
-    }
-
-    .symbol {
-      font-style: italic;
-    }
-
-    .sub {
-      font-size: 0.73em;
-      vertical-align: sub;
-    }
-
-    @media (max-width: 1080px) {
-      .hero,
-      .simulation-grid,
-      .content-grid {
+    @media (max-width: 900px) {
+      .layout,
+      .results {
         grid-template-columns: 1fr;
       }
 
-      .section-head p {
-        text-align: left;
-      }
-
-      .drawing {
-        min-height: 0;
-      }
-
-      .controls {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        align-items: start;
-      }
-
-      .control-title {
-        grid-column: auto;
-      }
-
-      .measurement,
-      .safety,
-      .statement,
-      .controls-head {
-        grid-column: 1 / -1;
-      }
-    }
-
-    @media (max-width: 680px) {
-      body {
-        font-size: 16px;
-      }
-
       .page {
-        width: min(100% - 22px, 1440px);
-        padding-top: 12px;
-      }
-
-      .controls,
-      .values,
-      .tasks ol {
-        display: block;
-      }
-
-      .control-group,
-      .value,
-      .tasks li {
-        margin-bottom: 11px;
-      }
-
-      .section-head {
-        display: block;
-      }
-
-      .drawing {
-        margin-top: 14px;
+        width: min(100% - 20px, 760px);
+        padding-top: 18px;
       }
     }
   </style>
 </head>
 <body>
-  <main class="page">
-    <header class="hero">
-      <section class="title-panel" aria-labelledby="page-title">
-        <p class="eyebrow">Druckmesstechnik · Lernsimulation</p>
-        <h1 id="page-title">U-Rohr-Manometer</h1>
-        <p class="lead">Überdruck, Dichte der Sperrflüssigkeit und Höhendifferenz unmittelbar untersuchen.</p>
-      </section>
-
-      <section class="scenario" aria-labelledby="scenario-title">
-        <h2 id="scenario-title">Einstiegsszenario</h2>
-        <p>Du arbeitest im Technikum der ProChem GmbH. An einem kleinen Versuchsbehälter soll der Überdruck mit einem U-Rohr-Manometer überprüft werden. Deine Aufgabe besteht darin, den Zusammenhang zwischen Überdruck, Sperrflüssigkeit und Höhendifferenz der Flüssigkeitssäule zu untersuchen.</p>
-      </section>
+  <div class="page">
+    <header>
+      <h1>Simulation: Druckdifferenzmessung mit dem U-Rohr-Manometer</h1>
+      <p class="intro">VerÃ¤ndern Sie die Druckdifferenz und die FlÃ¼ssigkeiten. Beobachten Sie, wie sich die HÃ¶hendifferenz Î”h im U-Rohr-Manometer verÃ¤ndert.</p>
     </header>
 
-    <section class="simulation-grid" aria-label="Interaktive Simulation und Einstellungen">
-      <article class="card visual-card">
-        <div class="section-head">
-          <h2>Messanordnung</h2>
-          <p>Messgröße: Überdruck <span class="symbol">p</span><span class="sub">e</span> zur Umgebung</p>
+    <div class="layout">
+      <aside class="panel controls" aria-label="Bedienbereich">
+        <h2 class="section-title">Bedienbereich</h2>
+
+        <div class="control">
+          <label for="deltaP">
+            <span>Druckdifferenz Î”p = p<sub>1</sub> âˆ’ p<sub>2</sub></span>
+            <span class="value-badge"><span id="deltaPValue">158</span> mbar</span>
+          </label>
+          <input id="deltaP" type="range" min="0" max="300" step="5" value="158">
         </div>
 
-        <svg class="drawing" viewBox="0 0 900 540" role="img" aria-labelledby="svgTitle svgDescription">
-          <title id="svgTitle">Schematische Darstellung eines U-Rohr-Manometers</title>
-          <desc id="svgDescription">Ein geschlossener Behälter ist mit dem linken Schenkel des U-Rohrs verbunden. Rechts ist das Rohr offen. Die Flüssigkeitshöhen und die Höhendifferenz verändern sich mit dem Überdruck.</desc>
-          <defs>
-            <linearGradient id="tankGas" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0" stop-color="#ffe2bc"/>
-              <stop offset="1" stop-color="#f5c78e"/>
-            </linearGradient>
-            <linearGradient id="tankMetal" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0" stop-color="#e9f1f4"/>
-              <stop offset="1" stop-color="#cddce3"/>
-            </linearGradient>
-            <marker id="arrowUp" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
-              <path d="M 4 0 L 8 8 L 0 8 Z" fill="#dd632e"/>
-            </marker>
-            <marker id="arrowDown" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
-              <path d="M 4 8 L 8 0 L 0 0 Z" fill="#dd632e"/>
-            </marker>
-          </defs>
-
-          <!-- Geschlossener Versuchsbehälter -->
-          <rect x="55" y="181" width="231" height="238" rx="34" fill="url(#tankGas)" stroke="#244451" stroke-width="4"/>
-          <path d="M55 316 H286 V383 Q286 419 250 419 H91 Q55 419 55 383 Z" fill="url(#tankMetal)" stroke="#244451" stroke-width="4"/>
-          <path d="M116 181 V151 H149 V181 M110 149 H156" fill="#f7fafb" stroke="#244451" stroke-width="4"/>
-          <text x="170" y="354" text-anchor="middle" class="diagram-label">Behälter</text>
-          <text x="170" y="241" text-anchor="middle" class="diagram-small">Behälterseite</text>
-          <text x="170" y="269" text-anchor="middle" class="diagram-small">= p<tspan baseline-shift="sub" font-size="11">amb</tspan> + p<tspan baseline-shift="sub" font-size="11">e</tspan></text>
-          <text x="170" y="296" text-anchor="middle" class="diagram-highlight">p<tspan baseline-shift="sub" font-size="14">abs</tspan> = p<tspan baseline-shift="sub" font-size="14">amb</tspan> + p<tspan baseline-shift="sub" font-size="14">e</tspan></text>
-
-          <!-- Leitung und Messanschluss -->
-          <path d="M252 182 V149 Q252 132 270 132 H502 Q531 132 548 154 L567 178" fill="none" stroke="#244451" stroke-width="20" stroke-linecap="round"/>
-          <path d="M252 182 V149 Q252 132 270 132 H502 Q531 132 548 154 L567 178" fill="none" stroke="#f5c78e" stroke-width="12" stroke-linecap="round"/>
-          <rect x="345" y="121" width="112" height="23" rx="4" fill="#d8e4e9" stroke="#244451" stroke-width="3"/>
-          <text x="401" y="96" text-anchor="middle" class="diagram-label">Messanschluss</text>
-          <line x1="402" y1="103" x2="402" y2="121" stroke="#587180" stroke-width="2"/>
-          <text x="424" y="179" text-anchor="middle" class="diagram-highlight">Überdruck p<tspan baseline-shift="sub" font-size="14">e</tspan></text>
-
-          <!-- Manometerplatte und offenes Rohr -->
-          <rect x="520" y="65" width="230" height="421" rx="8" fill="#edf3f5" stroke="#c1d0d7" stroke-width="3"/>
-          <text x="635" y="41" text-anchor="middle" class="diagram-label">U-Rohr-Manometer</text>
-          <path d="M575 178 V417 A58 58 0 0 0 691 417 V103" fill="none" stroke="#244451" stroke-width="38" stroke-linecap="round"/>
-          <path d="M575 178 V417 A58 58 0 0 0 691 417 V103" fill="none" stroke="#f8fcfd" stroke-width="29" stroke-linecap="round"/>
-          <path d="M676 102 H706 M676 96 H706" fill="none" stroke="#244451" stroke-width="3"/>
-          <text x="690" y="81" text-anchor="middle" class="diagram-label">offene Seite</text>
-          <text x="710" y="128" class="diagram-highlight">p<tspan baseline-shift="sub" font-size="13">amb</tspan></text>
-
-          <!-- Dynamische Sperrflüssigkeit im Rohr -->
-          <path id="fluidPath" d="" fill="none" stroke="var(--fluid)" stroke-width="21" stroke-linecap="butt"/>
-          <line id="leftSurface" x1="563" x2="587" y1="300" y2="300" stroke="#075071" stroke-width="3"/>
-          <line id="rightSurface" x1="679" x2="703" y1="300" y2="300" stroke="#075071" stroke-width="3"/>
-          <text x="470" y="450" text-anchor="middle" class="diagram-label">Sperrflüssigkeit</text>
-          <line x1="527" y1="439" x2="566" y2="424" stroke="#587180" stroke-width="2"/>
-
-          <!-- Mittellinie und Skala: 160 SVG-Einheiten entsprechen 1 m -->
-          <line x1="550" y1="300" x2="716" y2="300" stroke="#a8bbc4" stroke-dasharray="5 5" stroke-width="2"/>
-          <text x="544" y="293" text-anchor="end" class="diagram-small">Ruhelage</text>
-          <g id="scaleMarks" aria-label="Skala in Zentimetern"></g>
-          <text x="728" y="460" text-anchor="middle" class="diagram-small">Skala / cm</text>
-
-          <!-- Dynamische Höhenanzeige -->
-          <line id="deltaTopGuide" x1="692" x2="834" y1="300" y2="300" stroke="#8096a1" stroke-width="2"/>
-          <line id="deltaBottomGuide" x1="576" x2="834" y1="300" y2="300" stroke="#8096a1" stroke-width="2"/>
-          <line id="deltaArrow" x1="815" x2="815" y1="300" y2="300" stroke="#dd632e" stroke-width="3" marker-start="url(#arrowUp)" marker-end="url(#arrowDown)"/>
-          <text id="deltaText" x="829" y="305" class="diagram-highlight">Δh</text>
-          <text id="svgHeightValue" x="815" y="500" text-anchor="end" class="diagram-highlight">Δh = 30,6 cm</text>
-          <text x="815" y="522" text-anchor="end" class="diagram-small">berechnete Differenz der Spiegel</text>
-        </svg>
-      </article>
-
-      <aside class="card controls" aria-labelledby="settings-title">
-        <div class="controls-head">
-          <h2 class="control-title" id="settings-title">Einstellungen</h2>
-          <button class="reset" id="resetValues" type="button">Standardwerte zurücksetzen</button>
-        </div>
-
-        <div class="control-group">
-          <div class="slider-header">
-            <label for="pressure">Überdruck <span class="symbol">p</span><span class="sub">e</span></label>
-            <output id="pressureOutput" for="pressure">3.000 Pa</output>
+        <div class="control">
+          <div class="select-label">
+            <span>RohrleitungsflÃ¼ssigkeit Ï<sub>RFl</sub></span>
           </div>
-          <input id="pressure" type="range" min="0" max="10000" step="100" value="3000" aria-describedby="pressureValues">
-          <div class="range-limits" aria-hidden="true">
-            <span>0 Pa</span>
-            <span>10.000 Pa</span>
-          </div>
-          <div class="unit-chips" id="pressureValues" aria-live="polite">
-            <span id="chipPa">3.000 Pa</span>
-            <span id="chipMbar">30,0 mbar</span>
-            <span id="chipBar">0,0300 bar</span>
-          </div>
-        </div>
-
-        <div class="control-group">
-          <label for="fluid">Sperrflüssigkeit</label>
-          <select id="fluid">
-            <option value="1000" data-color="#228dcc">Wasser · 1000 kg/m³</option>
-            <option value="790" data-color="#27a895">Ethanol · 790 kg/m³</option>
-            <option value="950" data-color="#846cc5">Silikonöl · 950 kg/m³</option>
-            <option value="13546" data-color="#71828c">Quecksilber · 13546 kg/m³</option>
+          <select id="pipeFluid">
+            <option value="Wasser" data-density="1000">Wasser: 1000 kg/mÂ³</option>
+            <option value="Ethanol" data-density="789">Ethanol: 789 kg/mÂ³</option>
+            <option value="Toluol" data-density="867" selected>Toluol: 867 kg/mÂ³</option>
           </select>
         </div>
 
-        <div class="measurement" aria-live="polite">
-          <span>Aktuelle Höhendifferenz</span>
-          <strong id="mainHeight">Δh = 30,6 cm</strong>
-          <small id="heightHint">Wasser bei 3.000 Pa Überdruck</small>
+        <div class="control">
+          <div class="select-label">
+            <span>SperrflÃ¼ssigkeit Ï<sub>SpFl</sub></span>
+          </div>
+          <select id="manometerFluid">
+            <option value="Wasser" data-density="1000">Wasser: 1000 kg/mÂ³</option>
+            <option value="SilikonÃ¶l" data-density="950">SilikonÃ¶l: 950 kg/mÂ³</option>
+            <option value="Quecksilber" data-density="13546" selected>Quecksilber: 13546 kg/mÂ³</option>
+          </select>
         </div>
 
-        <p class="statement" id="measurementStatement" aria-live="polite">Aktuelle Messaussage: Das Manometer zeigt einen Überdruck von <strong>3.000 Pa</strong>. Dieser entspricht einer Höhendifferenz von <strong>30,6 cm</strong>.</p>
-
-        <p class="safety" id="mercuryWarning"><strong>Hinweis:</strong> Quecksilber ist giftig und wird heute nur noch eingeschränkt bzw. unter besonderen Sicherheitsmaßnahmen verwendet.</p>
+        <div class="button-row">
+          <button id="resetButton" type="button">Startwerte wiederherstellen</button>
+        </div>
       </aside>
+
+      <main class="main">
+        <section class="panel drawing-panel" aria-label="Grafikbereich">
+          <h2 class="section-title">U-Rohr-Manometer an einer Rohrleitung</h2>
+          <div class="drawing-wrap">
+            <svg viewBox="0 0 900 620" role="img" aria-labelledby="svgTitle svgDesc">
+              <title id="svgTitle">Dynamische Zeichnung eines U-Rohr-Manometers</title>
+              <desc id="svgDesc">Rohrleitung, Armatur, Messstellen p1 und p2 sowie U-Rohr-Manometer mit dynamischer HÃ¶hendifferenz.</desc>
+
+              <defs>
+                <marker id="arrow" markerWidth="12" markerHeight="8" refX="10" refY="4" orient="auto">
+                  <path d="M0,0 L12,4 L0,8 Z" fill="#1469a8"></path>
+                </marker>
+                <marker id="arrowSmall" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+                  <path d="M0,0 L9,3.5 L0,7 Z" fill="#243746"></path>
+                </marker>
+                <marker id="arrowSmallStart" markerWidth="9" markerHeight="7" refX="1" refY="3.5" orient="auto">
+                  <path d="M9,0 L0,3.5 L9,7 Z" fill="#243746"></path>
+                </marker>
+                <clipPath id="leftTubeClip">
+                  <rect x="310" y="182" width="36" height="286" rx="16"></rect>
+                </clipPath>
+                <clipPath id="rightTubeClip">
+                  <rect x="554" y="182" width="36" height="286" rx="16"></rect>
+                </clipPath>
+                <clipPath id="uBottomClip">
+                  <path d="M310 430 L310 458 C310 532 590 532 590 458 L590 430 L554 430 L554 458 C554 485 346 485 346 458 L346 430 Z"></path>
+                </clipPath>
+              </defs>
+
+              <!-- Rohrleitung und StrÃ¶mung -->
+              <rect x="70" y="78" width="760" height="34" rx="2" fill="var(--pipe)" stroke="var(--pipe-dark)" stroke-width="4"></rect>
+              <line x1="150" y1="95" x2="270" y2="95" stroke="#1469a8" stroke-width="6" marker-end="url(#arrow)"></line>
+              <line x1="620" y1="95" x2="740" y2="95" stroke="#1469a8" stroke-width="6" marker-end="url(#arrow)"></line>
+              <text x="625" y="48" class="svg-label">Rohrleitung</text>
+
+              <!-- Armatur als ruhiges Ventilsymbol -->
+              <path d="M385 75 L420 75 L433 96 L420 117 L385 117 L372 96 Z" fill="#d7dde3" stroke="#263745" stroke-width="4"></path>
+              <path d="M515 75 L480 75 L467 96 L480 117 L515 117 L528 96 Z" fill="#d7dde3" stroke="#263745" stroke-width="4"></path>
+              <path d="M420 80 C438 113 462 113 480 80 L480 118 C459 139 441 139 420 118 Z" fill="#c6d0d9" stroke="#263745" stroke-width="4"></path>
+              <rect x="438" y="28" width="24" height="54" fill="#d7dde3" stroke="#263745" stroke-width="4"></rect>
+              <rect x="405" y="24" width="90" height="10" rx="4" fill="#d7dde3" stroke="#263745" stroke-width="4"></rect>
+              <line x1="450" y1="18" x2="450" y2="28" stroke="#263745" stroke-width="5"></line>
+              <text x="645" y="170" class="svg-label">Armatur</text>
+
+              <!-- Messleitungen -->
+              <path d="M328 112 V182" fill="none" stroke="#263745" stroke-width="5"></path>
+              <path d="M572 112 V182" fill="none" stroke="#263745" stroke-width="5"></path>
+              <path d="M298 130 H358" stroke="#263745" stroke-width="4"></path>
+              <path d="M542 130 H602" stroke="#263745" stroke-width="4"></path>
+              <path d="M306 130 L328 170 L350 130" fill="#fff" stroke="#263745" stroke-width="4"></path>
+              <path d="M550 130 L572 170 L594 130" fill="#fff" stroke="#263745" stroke-width="4"></path>
+              <text x="360" y="172" class="svg-label">p<tspan baseline-shift="sub" font-size="17">1</tspan></text>
+              <text x="608" y="172" class="svg-label">p<tspan baseline-shift="sub" font-size="17">2</tspan></text>
+
+              <!-- U-Rohr: FlÃ¼ssigkeiten werden durch JS verschoben. -->
+              <rect x="310" y="182" width="36" height="286" rx="16" fill="var(--glass)" stroke="#243746" stroke-width="4"></rect>
+              <rect x="554" y="182" width="36" height="286" rx="16" fill="var(--glass)" stroke="#243746" stroke-width="4"></rect>
+              <path d="M310 430 L310 458 C310 532 590 532 590 458 L590 430" fill="none" stroke="#243746" stroke-width="40" stroke-linecap="round"></path>
+              <path d="M310 430 L310 458 C310 532 590 532 590 458 L590 430" fill="none" stroke="#e8f2f8" stroke-width="32" stroke-linecap="round"></path>
+
+              <g clip-path="url(#leftTubeClip)">
+                <rect id="leftPipeFluid" x="310" y="182" width="36" height="180" fill="var(--pipe)"></rect>
+                <rect id="leftLockFluid" x="310" y="362" width="36" height="108" fill="var(--lock)"></rect>
+              </g>
+              <g clip-path="url(#rightTubeClip)">
+                <rect id="rightPipeFluid" x="554" y="182" width="36" height="180" fill="var(--pipe)"></rect>
+                <rect id="rightLockFluid" x="554" y="362" width="36" height="108" fill="var(--lock)"></rect>
+              </g>
+              <g clip-path="url(#uBottomClip)">
+                <rect x="290" y="408" width="320" height="130" fill="var(--lock)"></rect>
+              </g>
+
+              <line id="leftLevelLine" x1="304" y1="362" x2="352" y2="362" stroke="#243746" stroke-width="3"></line>
+              <line id="rightLevelLine" x1="548" y1="362" x2="596" y2="362" stroke="#243746" stroke-width="3"></line>
+
+              <!-- HÃ¶hendifferenz mit Doppelpfeil -->
+              <line id="measureTopGuide" x1="590" y1="292" x2="682" y2="292" stroke="#243746" stroke-width="2"></line>
+              <line id="measureBottomGuide" x1="346" y1="432" x2="682" y2="432" stroke="#243746" stroke-width="2"></line>
+              <line id="measureArrow" x1="666" y1="292" x2="666" y2="432" stroke="#243746" stroke-width="4" marker-start="url(#arrowSmallStart)" marker-end="url(#arrowSmall)"></line>
+              <text id="deltaLabel" x="692" y="370" class="svg-label">Î”h</text>
+
+              <!-- Beschriftungen und Legende -->
+              <text x="86" y="198" class="svg-label">FlÃ¼ssigkeit</text>
+              <text x="86" y="231" class="svg-label">in der</text>
+              <text x="86" y="264" class="svg-label">Rohrleitung</text>
+              <line x1="238" y1="237" x2="313" y2="252" stroke="#243746" stroke-width="3"></line>
+              <circle cx="326" cy="255" r="5" fill="#243746"></circle>
+
+              <text x="86" y="430" class="svg-label">Sperr-</text>
+              <text x="86" y="463" class="svg-label">flÃ¼ssigkeit</text>
+              <line x1="245" y1="447" x2="315" y2="425" stroke="#243746" stroke-width="3"></line>
+              <circle cx="328" cy="421" r="5" fill="#243746"></circle>
+
+              <text x="385" y="247" class="svg-label">Ï<tspan baseline-shift="sub" font-size="17">RFl</tspan></text>
+              <line x1="380" y1="238" x2="346" y2="230" stroke="#243746" stroke-width="3"></line>
+              <text x="606" y="480" class="svg-label">Ï<tspan baseline-shift="sub" font-size="17">SpFl</tspan></text>
+              <line x1="600" y1="468" x2="578" y2="449" stroke="#243746" stroke-width="3"></line>
+
+              <rect x="660" y="505" width="184" height="72" rx="6" fill="#fff" stroke="#d7e0ea" stroke-width="2"></rect>
+              <rect x="678" y="524" width="26" height="16" fill="var(--pipe)" stroke="#2f6688" stroke-width="2"></rect>
+              <text x="714" y="538" class="svg-note">RohrleitungsflÃ¼ssigkeit</text>
+              <rect x="678" y="550" width="26" height="16" fill="var(--lock)" stroke="#9f5d39" stroke-width="2"></rect>
+              <text x="714" y="564" class="svg-note">SperrflÃ¼ssigkeit</text>
+            </svg>
+          </div>
+          <div id="graphicNotice" class="message" hidden></div>
+        </section>
+
+        <section class="results" aria-label="Werte- und Formelbereich">
+          <div class="panel values">
+            <h2 class="section-title">Aktuelle Werte</h2>
+            <dl class="value-grid">
+              <dt>Î”p = p<sub>1</sub> âˆ’ p<sub>2</sub></dt><dd id="outDeltaMbar">158 mbar</dd>
+              <dt>Î”p</dt><dd id="outDeltaPa">15800 Pa</dd>
+              <dt>Beispiel p<sub>1</sub></dt><dd id="outP1">158 mbar</dd>
+              <dt>Beispiel p<sub>2</sub></dt><dd id="outP2">0 mbar</dd>
+              <dt>Ï<sub>RFl</sub></dt><dd id="outPipeDensity">867 kg/mÂ³</dd>
+              <dt>Ï<sub>SpFl</sub></dt><dd id="outLockDensity">13546 kg/mÂ³</dd>
+              <dt>Î”h</dt><dd id="outHeight">12,7 cm</dd>
+            </dl>
+            <div id="validationMessage" class="message error" hidden></div>
+          </div>
+
+          <div class="panel formula">
+            <h2 class="section-title">Formel</h2>
+            <div class="formula-box">
+              <div class="formula-line">Î”h = Î”p / ((Ï<sub>SpFl</sub> âˆ’ Ï<sub>RFl</sub>) Â· g)</div>
+              <div id="insertedFormula" class="formula-line">Î”h = 15800 Pa / ((13546 kg/mÂ³ âˆ’ 867 kg/mÂ³) Â· 9,81 m/sÂ²)</div>
+              <div id="formulaResult" class="result-line">Î”h â‰ˆ 12,7 cm</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel observation" aria-label="Beobachtungsbereich">
+          <h2 class="section-title">Beobachtung</h2>
+          <p id="observationText">Je grÃ¶ÃŸer die Druckdifferenz Î”p ist, desto grÃ¶ÃŸer wird die HÃ¶hendifferenz Î”h.</p>
+        </section>
+      </main>
+    </div>
+
+    <section class="panel task" aria-label="Arbeitsauftrag">
+      <h2 class="section-title">Arbeitsauftrag</h2>
+      <p>VerÃ¤ndern Sie nacheinander nur einen Parameter. Beschreiben Sie, wie sich die HÃ¶hendifferenz Î”h verÃ¤ndert, und erklÃ¤ren Sie Ihre Beobachtung mithilfe der Formel.</p>
     </section>
-
-    <section class="content-grid">
-      <article class="card values-card" aria-labelledby="values-title">
-        <h2 id="values-title">Werteübersicht</h2>
-        <dl class="values" aria-live="polite">
-          <div class="value">
-            <dt>Atmosphärendruck <span class="symbol">p</span><span class="sub">amb</span></dt>
-            <dd id="ambientValue">101.325 Pa · 1,01325 bar</dd>
-          </div>
-          <div class="value emphasis">
-            <dt>Überdruck <span class="symbol">p</span><span class="sub">e</span></dt>
-            <dd id="gaugeValue">3.000 Pa · 30,0 mbar · 0,0300 bar</dd>
-          </div>
-          <div class="value">
-            <dt>Absolutdruck <span class="symbol">p</span><span class="sub">abs</span></dt>
-            <dd id="absoluteValue">104.325 Pa · 1,04325 bar</dd>
-          </div>
-          <div class="value">
-            <dt>Dichte <span class="symbol">ρ</span><span class="sub">Fl</span></dt>
-            <dd id="densityValue">1.000 kg/m³</dd>
-          </div>
-          <div class="value emphasis height">
-            <dt>Höhendifferenz Δh</dt>
-            <dd id="heightValue">0,306 m · 30,6 cm · 306 mm</dd>
-          </div>
-        </dl>
-      </article>
-
-      <article class="card formula-card" aria-labelledby="formula-title">
-        <h2 id="formula-title">Formelzusammenhang</h2>
-        <div class="formula-box" aria-label="Formeln für den Überdruck und die Höhendifferenz">
-          <span><span class="symbol">p</span><span class="sub">e</span> = <span class="symbol">ρ</span><span class="sub">Fl</span> · <span class="symbol">g</span> · Δh</span>
-          <span class="secondary">Δh = <span class="symbol">p</span><span class="sub">e</span> / (<span class="symbol">ρ</span><span class="sub">Fl</span> · <span class="symbol">g</span>)</span>
-        </div>
-        <p class="explanation">Mit <span class="symbol">g</span> = 9,81 m/s² wird aus Druckdifferenz, Dichte und Flüssigkeitshöhe der angezeigte Überdruck bestimmt.</p>
-        <div class="example">
-          <span>Dynamische Beispielrechnung</span>
-          <p id="calculation"><span>Δh = 3.000 Pa / (1.000 kg/m³ · 9,81 m/s²)</span><span>Δh = 0,306 m = 30,6 cm</span></p>
-        </div>
-        <p class="formula-note">Das Manometer zeigt nicht den gesamten Druck im Behälter an, sondern die Druckdifferenz zur Umgebung.</p>
-      </article>
-    </section>
-
-    <section class="card tasks" aria-labelledby="tasks-title">
-      <h2 id="tasks-title">Arbeitsaufträge</h2>
-      <ol>
-        <li>Stelle nacheinander die Überdrücke 1.000 Pa, 3.000 Pa und 6.000 Pa ein und beschreibe die Veränderung der Höhendifferenz Δh.</li>
-        <li>Erkläre mithilfe der Flüssigkeitssäulen, weshalb ein größerer Überdruck zu einer größeren Höhendifferenz führt.</li>
-        <li>Stelle einen Überdruck von 3.000 Pa ein. Vergleiche die Höhendifferenz für Wasser, Ethanol, Silikonöl und Quecksilber.</li>
-        <li>Leite aus dem Vergleich ab, welchen Einfluss die Dichte der Sperrflüssigkeit auf die Höhendifferenz hat.</li>
-        <li>Berechne für Wasser und einen Überdruck von 5.000 Pa die erwartete Höhendifferenz Δh und überprüfe dein Ergebnis mit der Simulation.</li>
-        <li>Unterscheide anhand der Werteübersicht zwischen Atmosphärendruck, Überdruck und Absolutdruck.</li>
-        <li>Beurteile, welche Sperrflüssigkeit für die Messung kleiner Überdrücke besonders geeignet ist, und begründe deine Entscheidung fachlich.</li>
-      </ol>
-    </section>
-
-    <details class="card memo">
-      <summary>Merksatz</summary>
-      <p>Beim U-Rohr-Manometer entspricht der angezeigte Überdruck <span class="symbol">p</span><span class="sub">e</span> dem hydrostatischen Druck der Flüssigkeitssäule mit der Höhendifferenz Δh. Je größer der Überdruck ist, desto größer ist Δh. Je größer die Dichte der Sperrflüssigkeit ist, desto kleiner ist Δh bei gleichem Überdruck.</p>
-    </details>
-  </main>
+  </div>
 
   <script>
-    (() => {
-      "use strict";
+    // Dichten der auswÃ¤hlbaren FlÃ¼ssigkeiten in kg/mÂ³.
+    const fluids = {
+      pipe: {
+        Wasser: 1000,
+        Ethanol: 789,
+        Toluol: 867
+      },
+      manometer: {
+        Wasser: 1000,
+        "SilikonÃ¶l": 950,
+        Quecksilber: 13546
+      }
+    };
 
-      const P_AMB = 101325;
-      const G = 9.81;
-      const PX_PER_METER = 160;
-      const EQUILIBRIUM_Y = 300;
-      const PIPE_BOTTOM_Y = 417;
-      const LEFT_X = 575;
-      const RIGHT_X = 691;
-      const CURVE_RADIUS = 58;
+    const startValues = {
+      deltaP: 158,
+      pipeFluid: "Toluol",
+      manometerFluid: "Quecksilber"
+    };
 
-      const pressureSlider = document.getElementById("pressure");
-      const fluidSelect = document.getElementById("fluid");
-      const resetButton = document.getElementById("resetValues");
-      const fluidPath = document.getElementById("fluidPath");
-      const leftSurface = document.getElementById("leftSurface");
-      const rightSurface = document.getElementById("rightSurface");
-      const deltaTopGuide = document.getElementById("deltaTopGuide");
-      const deltaBottomGuide = document.getElementById("deltaBottomGuide");
-      const deltaArrow = document.getElementById("deltaArrow");
-      const deltaText = document.getElementById("deltaText");
-      const mercuryWarning = document.getElementById("mercuryWarning");
+    const g = 9.81;
+    const maxGraphicHeightCm = 35;
+    const pxPerCm = 4;
+    const baseLevelY = 360;
 
-      const fluidNames = {
-        "1000": "Wasser",
-        "790": "Ethanol",
-        "950": "Silikonöl",
-        "13546": "Quecksilber"
-      };
+    const elements = {
+      deltaP: document.getElementById("deltaP"),
+      deltaPValue: document.getElementById("deltaPValue"),
+      pipeFluid: document.getElementById("pipeFluid"),
+      manometerFluid: document.getElementById("manometerFluid"),
+      resetButton: document.getElementById("resetButton"),
+      outP1: document.getElementById("outP1"),
+      outP2: document.getElementById("outP2"),
+      outDeltaMbar: document.getElementById("outDeltaMbar"),
+      outDeltaPa: document.getElementById("outDeltaPa"),
+      outPipeDensity: document.getElementById("outPipeDensity"),
+      outLockDensity: document.getElementById("outLockDensity"),
+      outHeight: document.getElementById("outHeight"),
+      insertedFormula: document.getElementById("insertedFormula"),
+      formulaResult: document.getElementById("formulaResult"),
+      validationMessage: document.getElementById("validationMessage"),
+      graphicNotice: document.getElementById("graphicNotice"),
+      observationText: document.getElementById("observationText"),
+      leftPipeFluid: document.getElementById("leftPipeFluid"),
+      leftLockFluid: document.getElementById("leftLockFluid"),
+      rightPipeFluid: document.getElementById("rightPipeFluid"),
+      rightLockFluid: document.getElementById("rightLockFluid"),
+      leftLevelLine: document.getElementById("leftLevelLine"),
+      rightLevelLine: document.getElementById("rightLevelLine"),
+      measureTopGuide: document.getElementById("measureTopGuide"),
+      measureBottomGuide: document.getElementById("measureBottomGuide"),
+      measureArrow: document.getElementById("measureArrow"),
+      deltaLabel: document.getElementById("deltaLabel")
+    };
 
-      const format = (value, digits) => new Intl.NumberFormat("de-DE", {
+    function numberFromSelect(select) {
+      return Number(select.selectedOptions[0].dataset.density);
+    }
+
+    function formatDecimal(value, digits = 1) {
+      return value.toLocaleString("de-DE", {
         minimumFractionDigits: digits,
         maximumFractionDigits: digits
-      }).format(value);
-
-      const integer = (value) => new Intl.NumberFormat("de-DE", {
-        maximumFractionDigits: 0
-      }).format(value);
-
-      function drawScale() {
-        const scale = document.getElementById("scaleMarks");
-        let markup = '<line x1="728" y1="171" x2="728" y2="429" stroke="#587180" stroke-width="2"/>';
-
-        for (let cm = -70; cm <= 70; cm += 10) {
-          const y = EQUILIBRIUM_Y - (cm / 100) * PX_PER_METER;
-          const major = cm % 20 === 0 || Math.abs(cm) === 70;
-          markup += `<line x1="728" y1="${y}" x2="${major ? 743 : 738}" y2="${y}" stroke="#587180" stroke-width="${major ? 2 : 1.5}"/>`;
-          if (major || cm === 0) {
-            markup += `<text x="749" y="${y + 5}" class="diagram-small">${Math.abs(cm)}</text>`;
-          }
-        }
-
-        scale.innerHTML = markup;
-      }
-
-      function update() {
-        const pe = Number(pressureSlider.value);
-        const density = Number(fluidSelect.value);
-        const fluidName = fluidNames[String(density)];
-        const selectedColor = fluidSelect.options[fluidSelect.selectedIndex].dataset.color;
-        const pAbs = P_AMB + pe;
-        const deltaH = pe / (density * G);
-        const deltaCm = deltaH * 100;
-        const deltaMm = deltaH * 1000;
-
-        document.documentElement.style.setProperty("--fluid", selectedColor);
-        document.getElementById("pressureOutput").textContent = `${integer(pe)} Pa`;
-        document.getElementById("chipPa").textContent = `${integer(pe)} Pa`;
-        document.getElementById("chipMbar").textContent = `${format(pe / 100, 1)} mbar`;
-        document.getElementById("chipBar").textContent = `${format(pe / 100000, 4)} bar`;
-        document.getElementById("ambientValue").textContent = `${integer(P_AMB)} Pa · ${format(P_AMB / 100000, 5)} bar`;
-        document.getElementById("gaugeValue").textContent = `${integer(pe)} Pa · ${format(pe / 100, 1)} mbar · ${format(pe / 100000, 4)} bar`;
-        document.getElementById("absoluteValue").textContent = `${integer(pAbs)} Pa · ${format(pAbs / 100000, 5)} bar`;
-        document.getElementById("densityValue").textContent = `${integer(density)} kg/m³`;
-        document.getElementById("heightValue").textContent = `${format(deltaH, 3)} m · ${format(deltaCm, 1)} cm · ${format(deltaMm, 0)} mm`;
-        document.getElementById("mainHeight").textContent = `Δh = ${format(deltaCm, 1)} cm`;
-        document.getElementById("heightHint").textContent = `${fluidName} bei ${integer(pe)} Pa Überdruck`;
-        document.getElementById("svgHeightValue").textContent = `Δh = ${format(deltaCm, 1)} cm`;
-        document.getElementById("measurementStatement").innerHTML =
-          `Aktuelle Messaussage: Das Manometer zeigt einen Überdruck von <strong>${integer(pe)} Pa</strong>. Dieser entspricht einer Höhendifferenz von <strong>${format(deltaCm, 1)} cm</strong>.`;
-        document.getElementById("calculation").innerHTML =
-          `<span>Δh = ${integer(pe)} Pa / (${integer(density)} kg/m³ · ${format(G, 2)} m/s²)</span><span>Δh = ${format(deltaH, 3)} m = ${format(deltaCm, 1)} cm</span>`;
-
-        mercuryWarning.classList.toggle("visible", density === 13546);
-
-        // Beide Flüssigkeitsspiegel verschieben sich um je die halbe Höhendifferenz.
-        const visualDelta = deltaH * PX_PER_METER;
-        const yLeft = EQUILIBRIUM_Y + visualDelta / 2;
-        const yRight = EQUILIBRIUM_Y - visualDelta / 2;
-        fluidPath.setAttribute("d", `M ${LEFT_X} ${yLeft} V ${PIPE_BOTTOM_Y} A ${CURVE_RADIUS} ${CURVE_RADIUS} 0 0 0 ${RIGHT_X} ${PIPE_BOTTOM_Y} V ${yRight}`);
-        leftSurface.setAttribute("y1", yLeft);
-        leftSurface.setAttribute("y2", yLeft);
-        rightSurface.setAttribute("y1", yRight);
-        rightSurface.setAttribute("y2", yRight);
-        deltaTopGuide.setAttribute("y1", yRight);
-        deltaTopGuide.setAttribute("y2", yRight);
-        deltaBottomGuide.setAttribute("y1", yLeft);
-        deltaBottomGuide.setAttribute("y2", yLeft);
-
-        if (visualDelta > 12) {
-          deltaArrow.setAttribute("y1", yRight + 7);
-          deltaArrow.setAttribute("y2", yLeft - 7);
-          deltaArrow.style.display = "";
-          deltaText.setAttribute("y", (yLeft + yRight) / 2 + 6);
-        } else {
-          deltaArrow.style.display = "none";
-          deltaText.setAttribute("y", EQUILIBRIUM_Y - 14);
-        }
-      }
-
-      drawScale();
-      pressureSlider.addEventListener("input", update);
-      fluidSelect.addEventListener("change", update);
-      resetButton.addEventListener("click", () => {
-        pressureSlider.value = "3000";
-        fluidSelect.value = "1000";
-        update();
-        pressureSlider.focus();
       });
-      update();
-    })();
+    }
+
+    function formatWhole(value) {
+      return Math.round(value).toLocaleString("de-DE");
+    }
+
+    function setSelectValue(select, value) {
+      select.value = value;
+    }
+
+    function setTextForInvalidState(message) {
+      elements.validationMessage.textContent = message;
+      elements.validationMessage.hidden = false;
+      elements.outHeight.textContent = "nicht sinnvoll";
+      elements.insertedFormula.textContent = "Eine sinnvolle Berechnung ist mit diesen Einstellungen nicht mÃ¶glich.";
+      elements.formulaResult.textContent = "Î”h kann nicht positiv bestimmt werden.";
+    }
+
+    function clearValidation() {
+      elements.validationMessage.hidden = true;
+      elements.validationMessage.textContent = "";
+    }
+
+    // Das SVG wird stabil gehalten: Die reale HÃ¶he steht in den Werten,
+    // die grafische HÃ¶he wird bei groÃŸen Werten begrenzt.
+    function updateSvg(heightCm, isValid) {
+      const visibleHeight = isValid ? Math.min(Math.max(heightCm, 0), maxGraphicHeightCm) : 0;
+      const deltaPx = visibleHeight * pxPerCm;
+      const leftLevel = baseLevelY + deltaPx / 2;
+      const rightLevel = baseLevelY - deltaPx / 2;
+
+      elements.leftPipeFluid.setAttribute("y", 182);
+      elements.leftPipeFluid.setAttribute("height", Math.max(leftLevel - 182, 0));
+      elements.leftLockFluid.setAttribute("y", leftLevel);
+      elements.leftLockFluid.setAttribute("height", 468 - leftLevel);
+
+      elements.rightPipeFluid.setAttribute("y", 182);
+      elements.rightPipeFluid.setAttribute("height", Math.max(rightLevel - 182, 0));
+      elements.rightLockFluid.setAttribute("y", rightLevel);
+      elements.rightLockFluid.setAttribute("height", 468 - rightLevel);
+
+      elements.leftLevelLine.setAttribute("y1", leftLevel);
+      elements.leftLevelLine.setAttribute("y2", leftLevel);
+      elements.rightLevelLine.setAttribute("y1", rightLevel);
+      elements.rightLevelLine.setAttribute("y2", rightLevel);
+
+      elements.measureTopGuide.setAttribute("y1", rightLevel);
+      elements.measureTopGuide.setAttribute("y2", rightLevel);
+      elements.measureBottomGuide.setAttribute("y1", leftLevel);
+      elements.measureBottomGuide.setAttribute("y2", leftLevel);
+      elements.measureArrow.setAttribute("y1", rightLevel);
+      elements.measureArrow.setAttribute("y2", leftLevel);
+      elements.deltaLabel.setAttribute("y", (rightLevel + leftLevel) / 2 + 8);
+    }
+
+    function chooseObservation(deltaMbar, heightCm, manometerFluid, densityDifference) {
+      if (deltaMbar <= 25) {
+        return "Bei kleiner Druckdifferenz ist auch die HÃ¶hendifferenz im U-Rohr-Manometer klein.";
+      }
+      if (densityDifference <= 200) {
+        return "Wenn die Dichte der SperrflÃ¼ssigkeit nur wenig grÃ¶ÃŸer ist als die Dichte der RohrleitungsflÃ¼ssigkeit, wird die HÃ¶hendifferenz sehr groÃŸ.";
+      }
+      if (manometerFluid === "Quecksilber") {
+        return "Bei Quecksilber als SperrflÃ¼ssigkeit fÃ¤llt die HÃ¶hendifferenz deutlich kleiner aus als bei Wasser.";
+      }
+      if (heightCm > 35) {
+        return "Je grÃ¶ÃŸer die Druckdifferenz Î”p ist, desto grÃ¶ÃŸer wird die HÃ¶hendifferenz Î”h.";
+      }
+      return "Je grÃ¶ÃŸer die Druckdifferenz Î”p ist, desto grÃ¶ÃŸer wird die HÃ¶hendifferenz Î”h.";
+    }
+
+    function updateSimulation() {
+      const deltaMbar = Number(elements.deltaP.value);
+      const p1 = deltaMbar;
+      const p2 = 0;
+      const pipeFluidName = elements.pipeFluid.value;
+      const manometerFluidName = elements.manometerFluid.value;
+      const pipeDensity = numberFromSelect(elements.pipeFluid);
+      const manometerDensity = numberFromSelect(elements.manometerFluid);
+      const deltaPa = deltaMbar * 100;
+      const densityDifference = manometerDensity - pipeDensity;
+
+      elements.deltaPValue.textContent = deltaMbar;
+      elements.outP1.textContent = `${p1} mbar`;
+      elements.outP2.textContent = `${p2} mbar`;
+      elements.outDeltaMbar.textContent = `${deltaMbar} mbar`;
+      elements.outDeltaPa.textContent = `${formatWhole(deltaPa)} Pa`;
+      elements.outPipeDensity.textContent = `${formatWhole(pipeDensity)} kg/mÂ³`;
+      elements.outLockDensity.textContent = `${formatWhole(manometerDensity)} kg/mÂ³`;
+
+      clearValidation();
+      elements.graphicNotice.hidden = true;
+      elements.graphicNotice.className = "message";
+
+      if (deltaMbar <= 0) {
+        setTextForInvalidState("FÃ¼r eine sinnvolle Messung muss die Druckdifferenz Î”p grÃ¶ÃŸer als 0 sein.");
+        updateSvg(0, false);
+        elements.observationText.textContent = "Ohne positive Druckdifferenz entsteht in dieser Darstellung keine positive HÃ¶hendifferenz im U-Rohr-Manometer.";
+        return;
+      }
+
+      if (densityDifference <= 0) {
+        setTextForInvalidState("Die SperrflÃ¼ssigkeit muss in dieser vereinfachten Darstellung eine grÃ¶ÃŸere Dichte als die RohrleitungsflÃ¼ssigkeit besitzen.");
+        updateSvg(0, false);
+        elements.observationText.textContent = "Ohne grÃ¶ÃŸere Dichte der SperrflÃ¼ssigkeit passt das vereinfachte Modell fÃ¼r diese Darstellung nicht.";
+        return;
+      }
+
+      const heightM = deltaPa / (densityDifference * g);
+      const heightCm = heightM * 100;
+      const limited = heightCm > maxGraphicHeightCm;
+      const veryLarge = heightCm > 100;
+
+      elements.outHeight.textContent = `${formatDecimal(heightCm)} cm`;
+      elements.insertedFormula.textContent = `Î”h = ${formatWhole(deltaPa)} Pa / ((${formatWhole(manometerDensity)} kg/mÂ³ âˆ’ ${formatWhole(pipeDensity)} kg/mÂ³) Â· 9,81 m/sÂ²)`;
+      elements.formulaResult.textContent = `Î”h â‰ˆ ${formatDecimal(heightCm)} cm`;
+      elements.observationText.textContent = chooseObservation(deltaMbar, heightCm, manometerFluidName, densityDifference);
+      updateSvg(heightCm, true);
+
+      if (limited) {
+        const notices = ["Die grafische Darstellung ist zur besseren Lesbarkeit begrenzt."];
+        if (veryLarge) {
+          notices.push("Die berechnete HÃ¶hendifferenz ist fÃ¼r ein kompaktes U-Rohr-Manometer sehr groÃŸ.");
+        }
+        elements.graphicNotice.textContent = notices.join(" ");
+        elements.graphicNotice.hidden = false;
+        elements.graphicNotice.className = veryLarge ? "message warning" : "message";
+      }
+    }
+
+    function resetSimulation() {
+      elements.deltaP.value = startValues.deltaP;
+      setSelectValue(elements.pipeFluid, startValues.pipeFluid);
+      setSelectValue(elements.manometerFluid, startValues.manometerFluid);
+      updateSimulation();
+    }
+
+    [elements.deltaP, elements.pipeFluid, elements.manometerFluid].forEach((control) => {
+      control.addEventListener("input", updateSimulation);
+      control.addEventListener("change", updateSimulation);
+    });
+
+    elements.resetButton.addEventListener("click", resetSimulation);
+    updateSimulation();
   </script>
 </body>
 </html>
