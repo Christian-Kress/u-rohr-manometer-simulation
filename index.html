@@ -298,7 +298,7 @@
   <div class="page">
     <header>
       <h1>Simulation: Druckdifferenzmessung mit dem U-Rohr-Manometer</h1>
-      <p class="intro">VerÃ¤ndern Sie die Druckdifferenz und die FlÃ¼ssigkeiten. Beobachten Sie, wie sich die HÃ¶hendifferenz Î”h im U-Rohr-Manometer verÃ¤ndert.</p>
+      <p class="intro">Verändern Sie die Druckdifferenz und die Flüssigkeiten. Beobachten Sie, wie sich die Höhendifferenz Δh im U-Rohr-Manometer verändert.</p>
     </header>
 
     <div class="layout">
@@ -307,7 +307,7 @@
 
         <div class="control">
           <label for="deltaP">
-            <span>Druckdifferenz Î”p = p<sub>1</sub> âˆ’ p<sub>2</sub></span>
+            <span>Druckdifferenz Δp = p<sub>1</sub> − p<sub>2</sub></span>
             <span class="value-badge"><span id="deltaPValue">158</span> mbar</span>
           </label>
           <input id="deltaP" type="range" min="0" max="300" step="5" value="158">
@@ -315,23 +315,23 @@
 
         <div class="control">
           <div class="select-label">
-            <span>RohrleitungsflÃ¼ssigkeit Ï<sub>RFl</sub></span>
+            <span>Rohrleitungsflüssigkeit ρ<sub>RFl</sub></span>
           </div>
           <select id="pipeFluid">
-            <option value="Wasser" data-density="1000">Wasser: 1000 kg/mÂ³</option>
-            <option value="Ethanol" data-density="789">Ethanol: 789 kg/mÂ³</option>
-            <option value="Toluol" data-density="867" selected>Toluol: 867 kg/mÂ³</option>
+            <option value="Wasser" data-density="1000">Wasser: 1000 kg/m³</option>
+            <option value="Ethanol" data-density="789">Ethanol: 789 kg/m³</option>
+            <option value="Toluol" data-density="867" selected>Toluol: 867 kg/m³</option>
           </select>
         </div>
 
         <div class="control">
           <div class="select-label">
-            <span>SperrflÃ¼ssigkeit Ï<sub>SpFl</sub></span>
+            <span>Sperrflüssigkeit ρ<sub>SpFl</sub></span>
           </div>
           <select id="manometerFluid">
-            <option value="Wasser" data-density="1000">Wasser: 1000 kg/mÂ³</option>
-            <option value="SilikonÃ¶l" data-density="950">SilikonÃ¶l: 950 kg/mÂ³</option>
-            <option value="Quecksilber" data-density="13546" selected>Quecksilber: 13546 kg/mÂ³</option>
+            <option value="Wasser" data-density="1000">Wasser: 1000 kg/m³</option>
+            <option value="Silikonöl" data-density="950">Silikonöl: 950 kg/m³</option>
+            <option value="Quecksilber" data-density="13546" selected>Quecksilber: 13546 kg/m³</option>
           </select>
         </div>
 
@@ -346,7 +346,7 @@
           <div class="drawing-wrap">
             <svg viewBox="0 0 900 620" role="img" aria-labelledby="svgTitle svgDesc">
               <title id="svgTitle">Dynamische Zeichnung eines U-Rohr-Manometers</title>
-              <desc id="svgDesc">Rohrleitung, Armatur, Messstellen p1 und p2 sowie U-Rohr-Manometer mit dynamischer HÃ¶hendifferenz.</desc>
+              <desc id="svgDesc">Rohrleitung, Armatur, Messstellen p1 und p2 sowie U-Rohr-Manometer mit dynamischer Höhendifferenz.</desc>
 
               <defs>
                 <marker id="arrow" markerWidth="12" markerHeight="8" refX="10" refY="4" orient="auto">
@@ -369,7 +369,7 @@
                 </clipPath>
               </defs>
 
-              <!-- Rohrleitung und StrÃ¶mung -->
+              <!-- Rohrleitung und Strömung -->
               <rect x="70" y="78" width="760" height="34" rx="2" fill="var(--pipe)" stroke="var(--pipe-dark)" stroke-width="4"></rect>
               <line x1="150" y1="95" x2="270" y2="95" stroke="#1469a8" stroke-width="6" marker-end="url(#arrow)"></line>
               <line x1="620" y1="95" x2="740" y2="95" stroke="#1469a8" stroke-width="6" marker-end="url(#arrow)"></line>
@@ -394,7 +394,7 @@
               <text x="360" y="172" class="svg-label">p<tspan baseline-shift="sub" font-size="17">1</tspan></text>
               <text x="608" y="172" class="svg-label">p<tspan baseline-shift="sub" font-size="17">2</tspan></text>
 
-              <!-- U-Rohr: FlÃ¼ssigkeiten werden durch JS verschoben. -->
+              <!-- U-Rohr: Flüssigkeiten werden durch JS verschoben. -->
               <rect x="310" y="182" width="36" height="286" rx="16" fill="var(--glass)" stroke="#243746" stroke-width="4"></rect>
               <rect x="554" y="182" width="36" height="286" rx="16" fill="var(--glass)" stroke="#243746" stroke-width="4"></rect>
               <path d="M310 430 L310 458 C310 532 590 532 590 458 L590 430" fill="none" stroke="#243746" stroke-width="40" stroke-linecap="round"></path>
@@ -415,34 +415,34 @@
               <line id="leftLevelLine" x1="304" y1="362" x2="352" y2="362" stroke="#243746" stroke-width="3"></line>
               <line id="rightLevelLine" x1="548" y1="362" x2="596" y2="362" stroke="#243746" stroke-width="3"></line>
 
-              <!-- HÃ¶hendifferenz mit Doppelpfeil -->
+              <!-- Höhendifferenz mit Doppelpfeil -->
               <line id="measureTopGuide" x1="590" y1="292" x2="682" y2="292" stroke="#243746" stroke-width="2"></line>
               <line id="measureBottomGuide" x1="346" y1="432" x2="682" y2="432" stroke="#243746" stroke-width="2"></line>
               <line id="measureArrow" x1="666" y1="292" x2="666" y2="432" stroke="#243746" stroke-width="4" marker-start="url(#arrowSmallStart)" marker-end="url(#arrowSmall)"></line>
-              <text id="deltaLabel" x="692" y="370" class="svg-label">Î”h</text>
+              <text id="deltaLabel" x="692" y="370" class="svg-label">Δh</text>
 
               <!-- Beschriftungen und Legende -->
-              <text x="86" y="198" class="svg-label">FlÃ¼ssigkeit</text>
+              <text x="86" y="198" class="svg-label">Flüssigkeit</text>
               <text x="86" y="231" class="svg-label">in der</text>
               <text x="86" y="264" class="svg-label">Rohrleitung</text>
               <line x1="238" y1="237" x2="313" y2="252" stroke="#243746" stroke-width="3"></line>
               <circle cx="326" cy="255" r="5" fill="#243746"></circle>
 
               <text x="86" y="430" class="svg-label">Sperr-</text>
-              <text x="86" y="463" class="svg-label">flÃ¼ssigkeit</text>
+              <text x="86" y="463" class="svg-label">flüssigkeit</text>
               <line x1="245" y1="447" x2="315" y2="425" stroke="#243746" stroke-width="3"></line>
               <circle cx="328" cy="421" r="5" fill="#243746"></circle>
 
-              <text x="385" y="247" class="svg-label">Ï<tspan baseline-shift="sub" font-size="17">RFl</tspan></text>
+              <text x="385" y="247" class="svg-label">ρ<tspan baseline-shift="sub" font-size="17">RFl</tspan></text>
               <line x1="380" y1="238" x2="346" y2="230" stroke="#243746" stroke-width="3"></line>
-              <text x="606" y="480" class="svg-label">Ï<tspan baseline-shift="sub" font-size="17">SpFl</tspan></text>
+              <text x="606" y="480" class="svg-label">ρ<tspan baseline-shift="sub" font-size="17">SpFl</tspan></text>
               <line x1="600" y1="468" x2="578" y2="449" stroke="#243746" stroke-width="3"></line>
 
               <rect x="660" y="505" width="184" height="72" rx="6" fill="#fff" stroke="#d7e0ea" stroke-width="2"></rect>
               <rect x="678" y="524" width="26" height="16" fill="var(--pipe)" stroke="#2f6688" stroke-width="2"></rect>
-              <text x="714" y="538" class="svg-note">RohrleitungsflÃ¼ssigkeit</text>
+              <text x="714" y="538" class="svg-note">Rohrleitungsflüssigkeit</text>
               <rect x="678" y="550" width="26" height="16" fill="var(--lock)" stroke="#9f5d39" stroke-width="2"></rect>
-              <text x="714" y="564" class="svg-note">SperrflÃ¼ssigkeit</text>
+              <text x="714" y="564" class="svg-note">Sperrflüssigkeit</text>
             </svg>
           </div>
           <div id="graphicNotice" class="message" hidden></div>
@@ -452,13 +452,13 @@
           <div class="panel values">
             <h2 class="section-title">Aktuelle Werte</h2>
             <dl class="value-grid">
-              <dt>Î”p = p<sub>1</sub> âˆ’ p<sub>2</sub></dt><dd id="outDeltaMbar">158 mbar</dd>
-              <dt>Î”p</dt><dd id="outDeltaPa">15800 Pa</dd>
+              <dt>Δp = p<sub>1</sub> − p<sub>2</sub></dt><dd id="outDeltaMbar">158 mbar</dd>
+              <dt>Δp</dt><dd id="outDeltaPa">15800 Pa</dd>
               <dt>Beispiel p<sub>1</sub></dt><dd id="outP1">158 mbar</dd>
               <dt>Beispiel p<sub>2</sub></dt><dd id="outP2">0 mbar</dd>
-              <dt>Ï<sub>RFl</sub></dt><dd id="outPipeDensity">867 kg/mÂ³</dd>
-              <dt>Ï<sub>SpFl</sub></dt><dd id="outLockDensity">13546 kg/mÂ³</dd>
-              <dt>Î”h</dt><dd id="outHeight">12,7 cm</dd>
+              <dt>ρ<sub>RFl</sub></dt><dd id="outPipeDensity">867 kg/m³</dd>
+              <dt>ρ<sub>SpFl</sub></dt><dd id="outLockDensity">13546 kg/m³</dd>
+              <dt>Δh</dt><dd id="outHeight">12,7 cm</dd>
             </dl>
             <div id="validationMessage" class="message error" hidden></div>
           </div>
@@ -466,28 +466,28 @@
           <div class="panel formula">
             <h2 class="section-title">Formel</h2>
             <div class="formula-box">
-              <div class="formula-line">Î”h = Î”p / ((Ï<sub>SpFl</sub> âˆ’ Ï<sub>RFl</sub>) Â· g)</div>
-              <div id="insertedFormula" class="formula-line">Î”h = 15800 Pa / ((13546 kg/mÂ³ âˆ’ 867 kg/mÂ³) Â· 9,81 m/sÂ²)</div>
-              <div id="formulaResult" class="result-line">Î”h â‰ˆ 12,7 cm</div>
+              <div class="formula-line">Δh = Δp / ((ρ<sub>SpFl</sub> − ρ<sub>RFl</sub>) · g)</div>
+              <div id="insertedFormula" class="formula-line">Δh = 15800 Pa / ((13546 kg/m³ − 867 kg/m³) · 9,81 m/s²)</div>
+              <div id="formulaResult" class="result-line">Δh ≈ 12,7 cm</div>
             </div>
           </div>
         </section>
 
         <section class="panel observation" aria-label="Beobachtungsbereich">
           <h2 class="section-title">Beobachtung</h2>
-          <p id="observationText">Je grÃ¶ÃŸer die Druckdifferenz Î”p ist, desto grÃ¶ÃŸer wird die HÃ¶hendifferenz Î”h.</p>
+          <p id="observationText">Je größer die Druckdifferenz Δp ist, desto größer wird die Höhendifferenz Δh.</p>
         </section>
       </main>
     </div>
 
     <section class="panel task" aria-label="Arbeitsauftrag">
       <h2 class="section-title">Arbeitsauftrag</h2>
-      <p>VerÃ¤ndern Sie nacheinander nur einen Parameter. Beschreiben Sie, wie sich die HÃ¶hendifferenz Î”h verÃ¤ndert, und erklÃ¤ren Sie Ihre Beobachtung mithilfe der Formel.</p>
+      <p>Verändern Sie nacheinander nur einen Parameter. Beschreiben Sie, wie sich die Höhendifferenz Δh verändert, und erklären Sie Ihre Beobachtung mithilfe der Formel.</p>
     </section>
   </div>
 
   <script>
-    // Dichten der auswÃ¤hlbaren FlÃ¼ssigkeiten in kg/mÂ³.
+    // Dichten der auswählbaren Flüssigkeiten in kg/m³.
     const fluids = {
       pipe: {
         Wasser: 1000,
@@ -496,7 +496,7 @@
       },
       manometer: {
         Wasser: 1000,
-        "SilikonÃ¶l": 950,
+        "Silikonöl": 950,
         Quecksilber: 13546
       }
     };
@@ -565,8 +565,8 @@
       elements.validationMessage.textContent = message;
       elements.validationMessage.hidden = false;
       elements.outHeight.textContent = "nicht sinnvoll";
-      elements.insertedFormula.textContent = "Eine sinnvolle Berechnung ist mit diesen Einstellungen nicht mÃ¶glich.";
-      elements.formulaResult.textContent = "Î”h kann nicht positiv bestimmt werden.";
+      elements.insertedFormula.textContent = "Eine sinnvolle Berechnung ist mit diesen Einstellungen nicht möglich.";
+      elements.formulaResult.textContent = "Δh kann nicht positiv bestimmt werden.";
     }
 
     function clearValidation() {
@@ -574,8 +574,8 @@
       elements.validationMessage.textContent = "";
     }
 
-    // Das SVG wird stabil gehalten: Die reale HÃ¶he steht in den Werten,
-    // die grafische HÃ¶he wird bei groÃŸen Werten begrenzt.
+    // Das SVG wird stabil gehalten: Die reale Höhe steht in den Werten,
+    // die grafische Höhe wird bei großen Werten begrenzt.
     function updateSvg(heightCm, isValid) {
       const visibleHeight = isValid ? Math.min(Math.max(heightCm, 0), maxGraphicHeightCm) : 0;
       const deltaPx = visibleHeight * pxPerCm;
@@ -608,18 +608,18 @@
 
     function chooseObservation(deltaMbar, heightCm, manometerFluid, densityDifference) {
       if (deltaMbar <= 25) {
-        return "Bei kleiner Druckdifferenz ist auch die HÃ¶hendifferenz im U-Rohr-Manometer klein.";
+        return "Bei kleiner Druckdifferenz ist auch die Höhendifferenz im U-Rohr-Manometer klein.";
       }
       if (densityDifference <= 200) {
-        return "Wenn die Dichte der SperrflÃ¼ssigkeit nur wenig grÃ¶ÃŸer ist als die Dichte der RohrleitungsflÃ¼ssigkeit, wird die HÃ¶hendifferenz sehr groÃŸ.";
+        return "Wenn die Dichte der Sperrflüssigkeit nur wenig größer ist als die Dichte der Rohrleitungsflüssigkeit, wird die Höhendifferenz sehr groß.";
       }
       if (manometerFluid === "Quecksilber") {
-        return "Bei Quecksilber als SperrflÃ¼ssigkeit fÃ¤llt die HÃ¶hendifferenz deutlich kleiner aus als bei Wasser.";
+        return "Bei Quecksilber als Sperrflüssigkeit fällt die Höhendifferenz deutlich kleiner aus als bei Wasser.";
       }
       if (heightCm > 35) {
-        return "Je grÃ¶ÃŸer die Druckdifferenz Î”p ist, desto grÃ¶ÃŸer wird die HÃ¶hendifferenz Î”h.";
+        return "Je größer die Druckdifferenz Δp ist, desto größer wird die Höhendifferenz Δh.";
       }
-      return "Je grÃ¶ÃŸer die Druckdifferenz Î”p ist, desto grÃ¶ÃŸer wird die HÃ¶hendifferenz Î”h.";
+      return "Je größer die Druckdifferenz Δp ist, desto größer wird die Höhendifferenz Δh.";
     }
 
     function updateSimulation() {
@@ -638,24 +638,24 @@
       elements.outP2.textContent = `${p2} mbar`;
       elements.outDeltaMbar.textContent = `${deltaMbar} mbar`;
       elements.outDeltaPa.textContent = `${formatWhole(deltaPa)} Pa`;
-      elements.outPipeDensity.textContent = `${formatWhole(pipeDensity)} kg/mÂ³`;
-      elements.outLockDensity.textContent = `${formatWhole(manometerDensity)} kg/mÂ³`;
+      elements.outPipeDensity.textContent = `${formatWhole(pipeDensity)} kg/m³`;
+      elements.outLockDensity.textContent = `${formatWhole(manometerDensity)} kg/m³`;
 
       clearValidation();
       elements.graphicNotice.hidden = true;
       elements.graphicNotice.className = "message";
 
       if (deltaMbar <= 0) {
-        setTextForInvalidState("FÃ¼r eine sinnvolle Messung muss die Druckdifferenz Î”p grÃ¶ÃŸer als 0 sein.");
+        setTextForInvalidState("Für eine sinnvolle Messung muss die Druckdifferenz Δp größer als 0 sein.");
         updateSvg(0, false);
-        elements.observationText.textContent = "Ohne positive Druckdifferenz entsteht in dieser Darstellung keine positive HÃ¶hendifferenz im U-Rohr-Manometer.";
+        elements.observationText.textContent = "Ohne positive Druckdifferenz entsteht in dieser Darstellung keine positive Höhendifferenz im U-Rohr-Manometer.";
         return;
       }
 
       if (densityDifference <= 0) {
-        setTextForInvalidState("Die SperrflÃ¼ssigkeit muss in dieser vereinfachten Darstellung eine grÃ¶ÃŸere Dichte als die RohrleitungsflÃ¼ssigkeit besitzen.");
+        setTextForInvalidState("Die Sperrflüssigkeit muss in dieser vereinfachten Darstellung eine größere Dichte als die Rohrleitungsflüssigkeit besitzen.");
         updateSvg(0, false);
-        elements.observationText.textContent = "Ohne grÃ¶ÃŸere Dichte der SperrflÃ¼ssigkeit passt das vereinfachte Modell fÃ¼r diese Darstellung nicht.";
+        elements.observationText.textContent = "Ohne größere Dichte der Sperrflüssigkeit passt das vereinfachte Modell für diese Darstellung nicht.";
         return;
       }
 
@@ -665,15 +665,15 @@
       const veryLarge = heightCm > 100;
 
       elements.outHeight.textContent = `${formatDecimal(heightCm)} cm`;
-      elements.insertedFormula.textContent = `Î”h = ${formatWhole(deltaPa)} Pa / ((${formatWhole(manometerDensity)} kg/mÂ³ âˆ’ ${formatWhole(pipeDensity)} kg/mÂ³) Â· 9,81 m/sÂ²)`;
-      elements.formulaResult.textContent = `Î”h â‰ˆ ${formatDecimal(heightCm)} cm`;
+      elements.insertedFormula.textContent = `Δh = ${formatWhole(deltaPa)} Pa / ((${formatWhole(manometerDensity)} kg/m³ − ${formatWhole(pipeDensity)} kg/m³) · 9,81 m/s²)`;
+      elements.formulaResult.textContent = `Δh ≈ ${formatDecimal(heightCm)} cm`;
       elements.observationText.textContent = chooseObservation(deltaMbar, heightCm, manometerFluidName, densityDifference);
       updateSvg(heightCm, true);
 
       if (limited) {
         const notices = ["Die grafische Darstellung ist zur besseren Lesbarkeit begrenzt."];
         if (veryLarge) {
-          notices.push("Die berechnete HÃ¶hendifferenz ist fÃ¼r ein kompaktes U-Rohr-Manometer sehr groÃŸ.");
+          notices.push("Die berechnete Höhendifferenz ist für ein kompaktes U-Rohr-Manometer sehr groß.");
         }
         elements.graphicNotice.textContent = notices.join(" ");
         elements.graphicNotice.hidden = false;
